@@ -20,3 +20,5 @@ Ahora que se abrió el interprete de líneas de comando, escribimos la ubicació
 Inmediatamete escribimos el siguiente comando `py Complete_code.py`, este comando ejecutara el archivo Python.
 
 ![image](https://github.com/NelN1/Proyecto-Formativo-C112/assets/129478048/3e05f285-7905-4d47-94bf-86a9ffc70bfb)
+
+Escribimos el siguiente comando `py Complete.py` para acceder al docstring disponibles.
