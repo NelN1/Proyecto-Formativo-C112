@@ -9,5 +9,11 @@ https://github.com/electronut/pp/tree/master
 
 Para ejecutar el archivo Complete_code.py, primero tenemos que obtener la dirección del archivo, para eso iremos en la carpeta donde guardamos el archivo y daremos click derecho, aparecere varias opciones, nosotros le damos el lcik izquierdo a propiedades. Luego copiamos la dirección que aparece en ubicación.
 ![image](https://github.com/NelN1/Proyecto-Formativo-C112/assets/129478048/c43fc19a-0ad8-4644-9cc1-f21e25d4c0bf)
-Luego presionamos la tecla `windows`+`R`, se tienen que presionar las dos teclas al mismo tiempo, en la parte de abrir escribimos `cmd` y le damos click izquerdo a Aceptar.
+Luego presionamos la tecla `windows`+`R`, se tienen que presionar las dos teclas al mismo tiempo, en la parte de Abrir escribimos `cmd` y le damos click izquerdo a Aceptar.
+
 ![image](https://github.com/NelN1/Proyecto-Formativo-C112/assets/129478048/97f67e8e-f1f6-4556-9d96-93069a9ee75e)
+
+Ahora que se abrió eel interprete de líneas de comando, escribimos `cd C:\Users\HP\Desktop\Generación_de_sobretonos_musicales-CC112\Part_code` en la línea de comandos y presionamos la tecla `Enter`.
+
+![image](https://github.com/NelN1/Proyecto-Formativo-C112/assets/129478048/5def5883-41f3-4145-901f-e542229c0303)
+
