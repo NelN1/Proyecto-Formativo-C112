@@ -30,4 +30,4 @@ Inmediatamete escribimos el siguiente comando `py Complete_code.py`, este comand
 
 Escribimos el siguiente comando `py Complete.py -h` para acceder a los argumentos disponibles.
 
-![Uploading image.png…]()
+![image](https://github.com/NelN1/Proyecto-Formativo-C112/assets/129478048/c4c4c62b-2187-4545-a990-5b979910613d)
