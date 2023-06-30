@@ -11,9 +11,11 @@ gShowPlot=False
 
 #Notas de la escala pentatónica menor
 #piano C4-E(b)-F-G-B(b)-C5
-pmNotes={'C4':262,'Eb':349,'F':349,'G':391,'Bb':466}
+pmNotes={'C4':262,'Eb':311,'F':349,'G':391,'Bb':466}
 #Diccionario de relación de teclas y notas
 keywords={'a': 0, 's': 1, 'd': 2, 'f': 3, 'g': 4}
+#Diccionario de colores de gráfico
+gracolor={262:'g', 311:'r', 349:'c',391:'m',466:'y'}
 #Diccionario con colores RGB
 color={0: (241,196,15), 1: (165,105,189), 2: (69,179,157), 3: (220,118,51) , 4: (93,109,126)}
 #Tamaño de la ventana de pygame
@@ -44,14 +46,12 @@ def generateNote(freq):
     indice=list(pmNotes.values()).index(freq)
     # initialize ring buffer
     buf = deque([random.random() - 0.5 for i in range(N)])
-    lineal=np.array(range(len(buf)))*0
     # plot a flag set
     if gShowPlot:
-        plt.cla()
-        arline, = plt.plot(lineal, 'b')
-        axline, = plt.plot(buf, 'g')
+        axline, = plt.plot(buf, gracolor[freq])
+        #ayline.grid()
         plt.title(llave[indice])
-        plt.pause(3.0)
+        plt.pause(5.0)
     # Inicializa el buffer de muestra
     samples = np.array([0]*nSamples, 'float32')
     for i in range(nSamples):
@@ -59,10 +59,10 @@ def generateNote(freq):
         avg = 0.995*0.5*(buf[0] + buf[1])
         buf.append(avg)
         buf.popleft() 
-    # plot of flag set 
+    # Gráfica si gShowPlot es True 
         if gShowPlot:
             if i % 1000 == 0:
-                axline.set_ydata(buf)
+                ayline=axline.set_ydata(buf)
                 plt.draw()
     # samples to 16-bit to string
     # max value is 32767 for 16-bit
@@ -110,13 +110,13 @@ def main():
     parser.add_argument('--pcolor', action='store_true',required=False, help="This command can play the sound clip and shows the relationship of colors and notes in window.")
     parser.add_argument('--piano', action='store_true',required=False, help="Play piand mode.")
     args=parser.parse_args()
-
+    print(args)
     #show plot ut flag set
     if args.display:
         gShowPlot = True
         plt.ion()
 
-    #create note player
+    # Crear un objeto de la clase NotePlayer
     nplayer = NotePlayer()
 
     print('creating note...')
@@ -129,11 +129,12 @@ def main():
         else:
             print('fileName already created. skipping...')
             #add note to player
-            nplayer.add(name+'.wav')
+            moreFile=name+'.wav'
+            nplayer.add(moreFile)
 
             #play note if display flag set
             if args.display:
-                nplayer.play(name+'.wav')
+                nplayer.play(moreFile)
                 time.sleep(0.5)
     
     #Solo reproduce una melodía aleatoria
@@ -172,9 +173,27 @@ def main():
         screen=pygame.display.set_mode(size)
         pygame.display.set_caption("Piano mode")
         font=pygame.font.Font('freesansbold.ttf',26)
-        text=font.render('Press the keys A, S, D, F or G',True, 'black')
-        textRect=text.get_rect()
-        textRect.center=(400,300)
+        text1=font.render("Tecla    Nota",True, 'black')
+        text1Rect=text1.get_rect()
+        text1Rect.center=(380,100)
+        text2=font.render("A        C4",True, 'black')
+        text2Rect=text2.get_rect()
+        text2Rect.center=(380,130)
+        text3=font.render("S        Eb",True, 'black')
+        text3Rect=text3.get_rect()
+        text3Rect.center=(380,160)
+        text4=font.render("D         F",True, 'black')
+        text4Rect=text4.get_rect()
+        text4Rect.center=(375,190)
+        text5=font.render("F         G",True, 'black')
+        text5Rect=text5.get_rect()
+        text5Rect.center=(375,220)
+        text6=font.render("G        Bb",True, 'black')
+        text6Rect=text6.get_rect()
+        text6Rect.center=(380,250)
+        text7=font.render("Haz click en \"X\" para salir del modo piano",True, 'black')
+        text7Rect=text7.get_rect()
+        text7Rect.center=(380,60)
         run=True
         while run:
             for event in pygame.event.get():
@@ -212,7 +231,13 @@ def main():
                     time.sleep(0.5)
                 elif(event.type==pygame.QUIT): run=False
                 screen.fill(white)
-                screen.blit(text, textRect)
+                screen.blit(text1, text1Rect)
+                screen.blit(text2, text2Rect)
+                screen.blit(text3, text3Rect)
+                screen.blit(text4, text4Rect)
+                screen.blit(text5, text5Rect)
+                screen.blit(text6, text6Rect)
+                screen.blit(text7, text7Rect)
                 pygame.display.flip()
                 pygame.display.update()
         pygame.quit()
