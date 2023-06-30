@@ -1,4 +1,4 @@
-Para ejecutar el archivo Complete_code.py, primero tenemos que obtener la dirección del archivo, para eso iremos en la carpeta donde guardamos el archivo y daremos click derecho, aparecere varias opciones, nosotros le damos el lcik izquierdo a propiedades. Luego copiamos la dirección que aparece en ubicación.
+Para ejecutar el archivo Complete_code.py, primero tenemos que obtener la dirección del archivo, para eso iremos en la carpeta donde guardamos el archivo y daremos click derecho, aparecere varias opciones, nosotros le damos click izquierdo a  `propiedades`. Luego copiamos la dirección que aparece en ubicación.
 
 ![image](https://github.com/NelN1/Proyecto-Formativo-C112/assets/129478048/c43fc19a-0ad8-4644-9cc1-f21e25d4c0bf)
 
