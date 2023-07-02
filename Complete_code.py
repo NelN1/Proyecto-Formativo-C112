@@ -1,3 +1,4 @@
+#Importando las librerías necesarias
 import sys, os
 import time, random
 import wave, argparse, pygame
@@ -11,45 +12,44 @@ gShowPlot=False
 
 #Notas de la escala pentatónica menor
 #piano C4-E(b)-F-G-B(b)-C5
-pmNotes={'C4':262,'Eb':349,'F':349,'G':391,'Bb':466}
+pmNotes={'C4':261.626,'Eb':311.127,'F':349.228,'G':391.995,'Bb':466.164}
 #Diccionario de relación de teclas y notas
 keywords={'a': 0, 's': 1, 'd': 2, 'f': 3, 'g': 4}
+#Diccionario en cual las llaves son las frecuencias de las notas y sus valores son colores para las gráficas
+frecolor={ 261.626: 'g', 311.127: 'r', 349.228:'c', 391.995: 'm', 466.164:'y'}
 #Diccionario con colores RGB
 color={0: (241,196,15), 1: (165,105,189), 2: (69,179,157), 3: (220,118,51) , 4: (93,109,126)}
 #Tamaño de la ventana de pygame
 size=800, 600
-#color blanco en RGB
+#Inicializa la variable white de tipo Tupla que contiene el color blanco en la escala RGB.
 white=255,255,255
-# write out WAV file
+#Define la función que escribe el archivo WAV
 def writeWAVE(fname,data):
-    #open file
+    #Abrir archivo
     file=wave.open(fname,'wb')
-    #WAV file parameters
+    #Parámetros del archivo WAV
     nChannels=1
     sampleWidth=2
     frameRate=44100
     nFrames=44100
-    # set parameters
+    #Configurar los parámetros
     file.setparams((nChannels, sampleWidth, frameRate, nFrames, 'NONE', 'noncompressed'))
     file.writeframes(data)
     file.close()
 
-# generate note of given frequency
+#Define la función que genera una nota a partir de una frecuencia dada.
 def generateNote(freq):
     #freq=220
     nSamples = 44100
     sampleRate = 44100
     N = int(sampleRate/freq)
-    # initialize ring buffer
+    #Iniciañiza el buffer circular.
     buf = deque([random.random() - 0.5 for i in range(N)])
-    lineal=np.array(range(len(buf)))*0
-    # plot a flag set
+    #Muestra la gráfica si el valor de gShowPlot es verdadero.
     if gShowPlot:
-        plt.cla()
-        arline, = plt.plot(lineal, 'b')
-        axline, = plt.plot(buf, 'g')
+        axline, = plt.plot(buf, frecolor[freq])
         plt.pause(3.0)
-    # Inicializa el buffer de muestra
+    #Inicializa el buffer de muestra.
     samples = np.array([0]*nSamples, 'float32')
     for i in range(nSamples):
         samples[i] = buf[0]
@@ -61,84 +61,84 @@ def generateNote(freq):
             if i % 1000 == 0:
                 axline.set_ydata(buf)
                 plt.draw()
-    # samples to 16-bit to string
-    # max value is 32767 for 16-bit
+    # Muestra de 16-bit a string
+    # El máximo valor es 32767 para 16-bit
     samples = np.array(samples * 32767, 'int16')
     return samples.tobytes()
 
-# play a wav file
+#Reproduce un archivo WAV
 class NotePlayer:
     # constructor
     def __init__(self):
         pygame.mixer.pre_init(44100, -16, 1, 2048)
         pygame.init()
-        # dictionary of notes
+        #Diccionario de notas
         self.notes = {}
-    # add a note
+    #Añade una nota al diccionario self.notes
     def add(self, fileName):
         self.notes[fileName] = pygame.mixer.Sound(fileName)
-    # play a note
+    #Tocando una nota
     def play(self, fileName):
         try:
             self.notes[fileName].play()
         except:
-            print(fileName + ' not found!')
+            print(fileName + ' no encontrado!')
     def playRandom(self):
-        """play a random note"""
+        """Toca una nota aleatoria"""
         index = random.randint(0, len(self.notes)-1)
         note = list(self.notes.values())[index]
         note.play()
         return index
 
-#main() function
+#Definiendo a la función principal
 def main():
-    #declare global var
+    #Declarando una variable global
     global gShowPlot
     print("""
-       |-----------------------------------------------|
-       |Generating sounds with Karplus String Algorithm|
-       |-----------------------------------------------| 
+       |---------------------------------------------------|
+       |Generando sonidos con el aloritmo de Karplus-Strong|
+       |---------------------------------------------------| 
     """)
 
-    parser=argparse.ArgumentParser(description="Generating sounds with Karplus String Algorithm")
-    # add arguments
-    parser.add_argument('--display', action='store_true',required=False, help="this command display a graphic")
-    parser.add_argument('--play', action='store_true',required=False, help="This command oly can play the sound clip")
-    parser.add_argument('--pcolor', action='store_true',required=False, help="This command can play the sound clip and shows the relationship of colors and notes in window")
-    parser.add_argument('--piano', action='store_true',required=False, help="Play piand mode")
+    parser=argparse.ArgumentParser(description="Generando sonidos con el algoritmo de Karplus-Strong")
+    #Añade argumentos
+    parser.add_argument('--mostrar', action='store_true',required=False, help="Este argumento le dice al programa que genere un gráfico.")
+    parser.add_argument('--reproducir', action='store_true',required=False, help="Este argumento le dice al programa que genere una melodía aleatoria")
+    parser.add_argument('--pcolor', action='store_true',required=False, help="Este argumento le dice al programa que reproduzca música y al mismo tiempo muestre colores que están relacionados a las notas")
+    parser.add_argument('--piano', action='store_true',required=False, help="Este argumento le dice al programa que juegue al modo piano")
     args=parser.parse_args()
 
-    #show plot ut flag set
-    if args.display:
+    #Mostrar gráfico si se ingrese el argumento --mostrar desde la línea de comandos.
+    if args.mostrar:
         gShowPlot = True
         plt.ion()
 
-    #create note player
+    #Creando una instancia de la clase NotePlayer
     nplayer = NotePlayer()
 
-    print('creating note...')
+    print('Creando notas...')
     for name, freq in list(pmNotes.items()):
         fileName=name+'.wav'
-        if not os.path.exists(fileName) or args.display:
+        if not os.path.exists(fileName) or args.mostrar:
             data=generateNote(freq)
-            print('creating '+fileName+'...')
+            print('Creando '+fileName+'...')
             writeWAVE(fileName,data)
         else:
-            print('fileName already created. skipping...')
-            #add note to player
-            nplayer.add(name+'.wav')
-
-            #play note if display flag ser
-            if args.display:
-                nplayer.play(name+'.wav')
+            moreFile=name+'.wav'
+            print(fileName+' ya ha sido creado. Saltando al siguiente archivo...')
+            #Añade notas al diccionario de la clase.
+            nplayer.add(moreFile)
+            #Toca una nota si args.mostrar es True
+            if args.mostrar:
+                nplayer.play(moreFile)
                 time.sleep(0.5)
     
     #Solo reproduce una melodía aleatoria
-    if args.play:
+    if args.reproducir:
         while True:
             try:
                 nplayer.playRandom()
-                #rest - 1 to 8 beats
+                #Descansa - 1 to 8 beats
                 rest = np.random.choice([1,2,4,8], 1, p=[0.15,0.7,0.1,0.05])
                 time.sleep(0.25*rest[0])
             except KeyboardInterrupt:
@@ -149,29 +149,53 @@ def main():
         pygame.init()
         screen=pygame.display.set_mode(size)
         pygame.display.set_caption("Play mode")
+        font=pygame.font.Font('freesansbold.ttf',26)
+        text0=font.render('En la terminal, presiona las teclas CTRL+C para salir.',True, 'black')
+        text0Rect=text0.get_rect()
+        text0Rect.center=(400,100)
         play=True
         while play:
             try:
                 screen.fill(color[nplayer.playRandom()])
                 time.sleep(2.0)
                 pygame.display.flip()
-                #rest - 1 to 8 beats
+                #Descansa - 1 to 8 beats
                 rest = np.random.choice([1,2,4,8], 1, p=[0.15,0.7,0.1,0.05])
                 time.sleep(0.25*rest[0])
             except KeyboardInterrupt:
                 exit()
             screen.fill(white)
+            screen.blit(text0, text0Rect)
             pygame.display.flip()
-    #random piano mode
+            pygame.display.update()
     
+    #Modo piano
     if args.piano:
         pygame.init()
         screen=pygame.display.set_mode(size)
         pygame.display.set_caption("Piano mode")
         font=pygame.font.Font('freesansbold.ttf',26)
-        text=font.render('Press the keys A, S, D, F or G',True, 'black')
+        text=font.render('Key    Note',True, 'black')
         textRect=text.get_rect()
-        textRect.center=(400,300)
+        textRect.center=(380,100)
+        text1=font.render('A      C4',True, 'black')
+        text1Rect=text1.get_rect()
+        text1Rect.center=(380,130)
+        text2=font.render('S      Eb',True, 'black')
+        text2Rect=text2.get_rect()
+        text2Rect.center=(380,160)
+        text3=font.render('D      F',True, 'black')
+        text3Rect=text3.get_rect()
+        text3Rect.center=(373,190)
+        text4=font.render('F      G',True, 'black')
+        text4Rect=text4.get_rect()
+        text4Rect.center=(373,220)
+        text5=font.render('G      Bb',True, 'black')
+        text5Rect=text5.get_rect()
+        text5Rect.center=(380,250)
+        text6=font.render('Haz click en \'X\' para salir',True, 'black')
+        text6Rect=text6.get_rect()
+        text6Rect.center=(380,60)
         run=True
         while run:
             for event in pygame.event.get():
@@ -210,6 +234,12 @@ def main():
                 elif(event.type==pygame.QUIT): run=False
                 screen.fill(white)
                 screen.blit(text, textRect)
+                screen.blit(text1, text1Rect)
+                screen.blit(text2, text2Rect)
+                screen.blit(text3, text3Rect)
+                screen.blit(text4, text4Rect)
+                screen.blit(text5, text5Rect)
+                screen.blit(text6, text6Rect)
                 pygame.display.flip()
                 pygame.display.update()
         pygame.quit()
